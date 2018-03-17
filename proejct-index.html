@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Autocomplete</title>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"> </script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+   
+</head>
+
+<body>
+
+   <div class="ui-widget">
+       <label for="foods">Foods: </label>
+       <input id="foods" type="text">
+       <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+   </div>
+   <div id="myDiv">
+     
+   </div>
+ 
+  <!--  <div class="row">
+    <div id="MyChart"> <img src="/graph.jpg" style="width:100%" alt="This is where the graph should comes"> 
+        <canvas id="myChart" width="200" height="100" style="border:1px solid #000000;"> </canvas>
+     </div
+   </div>
+   -->
+<!--<div style="width: 500px ; height : 500px" >
+<canvas id="myChart" width="100" height="100" style="border:1px solid #000000;">
+</div> -->
+
+  <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+    <canvas id="myChart"></canvas>
+</div>
+
+<div>
+   
+      <button type="submit" id="myBtn" value="Change Grap"> 
+
+</div> 
+
+<script>
+       
+
+       $(document).ready(function() {
+
+           $("#foods").keyup(function() {
+
+               var inputVal = $(this).val();
+
+               console.log(inputVal.length);
+
+               if (inputVal.length >= 3) {
+                   $.ajax({
+                       url: "https://api.nal.usda.gov/ndb/search/?format=json&q=" + inputVal + "&sort=n&max=25&offset=0&api_key=wifP7t9q1wqkljOO3Lm0GGu6OkI2mgA3qLNqIGir",
+                         method: "POST",
+                         data: {
+                         search: inputVal
+                         },
+                        dataType: "text",
+                        success: function(data) {
+                        var result = JSON.parse(data);
+                           console.log(result);
+
+                           $('#myDiv').empty();
+                           $('#myDiv').append("<ul id='newList'></ul>");
+                           for(var ctr=0;ctr<10;ctr++)
+                           {
+
+                              var itName = result.list.item[ctr].name;
+                              var itNdbno = result.list.item[ctr].ndbno
+
+                            $("#newList").append("<li>"+ result.list.item[ctr].name + ":" + result.list.item[ctr].ndbno+"</li>");
+
+                            
+                         
+
+                         } // end of for
+                     
+                      } //end of success fx 
+
+                   }); // end of Ajax
+
+               } // end of if
+
+           });  // end of keup fx
+
+      
+
+var ctx = document.getElementById("myChart");
+
+var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ["Protiens", "Vitamins", "Fats", "Sugar", "Cholestrol", "Pottasium"],
+        datasets: [{
+            label: '#Food Composition',
+            data: [12, 7, 19, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    
+});
+
+ });  // end of ready fx
+
+</script>
+
+<style> 
+input[type=text] {
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+    width: 100%;
+}
+</style>
+
+
+
+
+</body>
+
+</html>
